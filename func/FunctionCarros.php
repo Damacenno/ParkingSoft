@@ -15,6 +15,9 @@ if (isset($_POST["function"])) {
         case 'saidaCarro':
             echo json_encode(saidaCarro($conn, $_POST['info']));
             break;
+        case 'moverCarro':
+            echo json_encode(moverCarro($conn, $_POST['info']));
+            break;
         case 'selectCarro':
             echo json_encode(selectCarro($conn, $_POST['info']));
             break;
@@ -30,68 +33,71 @@ function estacionarCarro($conn, $infos)
 {
     $id = $_SESSION['user']['id'];
     $total = $_SESSION['user']['total-vagas'];
+    if ($infos[2] > $total) {
+        return '199';
+    } else if ($infos[2] <= 0) {
+        return '200';
+    } else {
+        $sql = "SELECT * FROM carros WHERE `status_pago_carro`= 0 AND `id_estacionamento`= $id AND `placa_carro`= ?";
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param("s", $infos[0]);
 
+        if ($stmt->execute()) {
+            $result = $stmt->get_result();
+            $stmt->close();
 
-    $total = $_SESSION['user']['total-vagas'];
-    $sql = "SELECT * FROM carros WHERE `status_pago_carro`= 0 AND `id_estacionamento`= $id AND `placa_carro`= ?";
-    $stmt = $conn->prepare($sql);
-    $stmt->bind_param("s", $infos[0]);
+            if ($result->num_rows > 0) {
+                return '201'; // O CARRO COM A MESMA PLACA ESTA ESTACIONADO ATUALMENTE
+            } else {
+                $sql = "SELECT * FROM carros WHERE `status_pago_carro`= 0 AND `id_estacionamento`= $id AND `vaga_carro`= ?";
+                $stmt = $conn->prepare($sql);
+                $stmt->bind_param("s", $infos[2]);
 
-    if ($stmt->execute()) {
-        $result = $stmt->get_result();
-        $stmt->close();
+                if ($stmt->execute()) {
+                    $result = $stmt->get_result();
+                    $stmt->close();
 
-        if ($result->num_rows > 0) {
-            return '202'; // O CARRO COM A MESMA PLACA ESTA ESTACIONADO ATUALMENTE
-        } else {
-            $sql = "SELECT * FROM carros WHERE `status_pago_carro`= 0 AND `id_estacionamento`= $id AND `vaga_carro`= ?";
-            $stmt = $conn->prepare($sql);
-            $stmt->bind_param("s", $infos[2]);
+                    if ($result->num_rows > 0) {
+                        return '202'; // EXISTE UM CARRO NESTA VAGA
+                    } else {
+                        $query = "SELECT COUNT(*) as total FROM carros WHERE `id_estacionamento` = ? AND `status_pago_carro` = 0";
+                        $stmt = $conn->prepare($query);
+                        $stmt->bind_param("s", $id);
 
-            if ($stmt->execute()) {
-                $result = $stmt->get_result();
-                $stmt->close();
+                        if ($stmt->execute()) {
+                            $result = $stmt->get_result();
+                            $row = $result->fetch_assoc();
+                            $count = $row['total'];
 
-                if ($result->num_rows > 0) {
-                    return '203'; // EXISTE UM CARRO NESTA VAGA
-                } else {
-                    $query = "SELECT COUNT(*) as total FROM carros WHERE `id_estacionamento` = ? AND `status_pago_carro` = 0";
-                    $stmt = $conn->prepare($query);
-                    $stmt->bind_param("s", $id);
-
-                    if ($stmt->execute()) {
-                        $result = $stmt->get_result();
-                        $row = $result->fetch_assoc();
-                        $count = $row['total'];
-
-                        if ($count + 1 > $total) {
-                            $stmt->close();
-                            return '201'; // CHEGOU AO LIMITE DE CARROS ESTACIONADOS
-                        } else {
-                            $stmt->close();
-
-                            $query = "INSERT INTO carros (`placa_carro`, `modelo_carro`, `vaga_carro`, `entrada_carro`, `status_pago_carro`,`id_estacionamento`) VALUES (?, ?, ?, ?, '0',$id)";
-                            $stmt = $conn->prepare($query);
-                            $stmt->bind_param("ssii", $infos[0], $infos[1], $infos[2], $infos[3]);
-
-                            if ($stmt->execute()) {
+                            if ($count + 1 > $total) {
                                 $stmt->close();
-                                $conn->close();
-                                return 1; // Sucesso inserir
+                                return '203'; // CHEGOU AO LIMITE DE CARROS ESTACIONADOS
                             } else {
                                 $stmt->close();
-                                $conn->close();
-                                return 0; // Falha na inserção no banco
+
+                                $query = "INSERT INTO carros (`placa_carro`, `modelo_carro`, `vaga_carro`, `entrada_carro`, `status_pago_carro`,`id_estacionamento`) VALUES (?, ?, ?, ?, '0',$id)";
+                                $stmt = $conn->prepare($query);
+                                $stmt->bind_param("ssii", $infos[0], $infos[1], $infos[2], $infos[3]);
+
+                                if ($stmt->execute()) {
+                                    $stmt->close();
+                                    $conn->close();
+                                    return 1; // Sucesso inserir
+                                } else {
+                                    $stmt->close();
+                                    $conn->close();
+                                    return 0; // Falha na inserção no banco
+                                }
                             }
+                        } else {
+                            $stmt->close();
+                            return 0; // Falha na consulta
                         }
-                    } else {
-                        $stmt->close();
-                        return 0; // Falha na consulta
                     }
+                } else {
+                    $stmt->close();
+                    return 0; // Falha na consulta
                 }
-            } else {
-                $stmt->close();
-                return 0; // Falha na consulta
             }
         }
     }
@@ -211,5 +217,39 @@ function saidaCarro($conn, $placa)
         $stmt->close();
         $conn->close();
         return 0;
+    }
+}
+
+function moverCarro($conn, $infos)
+{
+    $id = $_SESSION['user']['id'];
+    $total = $_SESSION['user']['total-vagas'];
+    if ($infos[0] > $total){
+        return '200';
+    } else {
+        $sql = "SELECT * FROM carros WHERE `id_estacionamento` = ? AND  `vaga_carro` = ? AND `status_pago_carro` = 0";
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param("ii", $id,$infos[0]);
+        if ($stmt->execute()) {
+            $result = $stmt->get_result();
+            $stmt->close();
+
+            if ($result->num_rows > 0) {
+                return 0;
+            } else {
+                $sql = "UPDATE `carros` SET `vaga_carro`=? WHERE `placa_carro` = ? AND  `id_estacionamento` = ? AND `status_pago_carro`= 0";
+                $stmt = $conn->prepare($sql);
+                $stmt->bind_param("isi", $infos[0],$infos[1], $id);
+                if ($stmt->execute()) {
+                    $stmt->close();
+                    $conn->close();
+                    return 1;
+                } else {
+                    $stmt->close();
+                    $conn->close();
+                    return 0;
+                }
+            }
+        }
     }
 }

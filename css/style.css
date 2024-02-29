@@ -47,14 +47,16 @@
 }
 
 
-td .btn-danger {
+td .btn-danger, td .btn-primary {
     height: 1.5rem;
     font-size: 1em;
     display: flex;
     justify-content: center;
     align-items: center;
-    width: 100%;
+    width: 60%;
+    margin: 5px;
 }
+
 
 .btn_estacionar {
     height: 1.5rem;

@@ -21,7 +21,7 @@
                 </div>
                 <div class="col-md-6">
                     <label for="input_endereco" class="form-label">Endereço</label>
-                    <input type="text" class="form-control" id="input_endereco" placeholder="Rua Barao de Jundiai"
+                    <input type="text" class="form-control" id="input_endereco" value="Rua Barao de Jundiai"
                         disabled>
                 </div>
                 <div class="col-md-3">
@@ -33,8 +33,16 @@
                     <input type="number" class="form-control" id="input_numero" value="69" disabled>
                 </div>
                 <div class="col-md-3">
-                    <label for="inputZip" class="form-label">Total de vagas</label>
-                    <input type="number" class="form-control" id="inputZip">
+                    <label for="inputTotal" class="form-label">Email de contato</label>
+                    <input type="email" class="form-control" id="inputTotal" disabled value="estacionamento@gmail.com">
+                </div>
+                <div class="col-md-3">
+                    <label for="inputTelefone" class="form-label">Telefone de contato</label>
+                    <input type="email" class="form-control" id="inputTelefone" disabled value="14 96654-9865">
+                </div>
+                <div class="col-md-3">
+                    <label for="inputTotal" class="form-label">Total de vagas</label>
+                    <input type="number" class="form-control" id="inputTotal">
                 </div>
                 <div class="col-12">
                     <div class="form-check">

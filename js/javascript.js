@@ -20,6 +20,10 @@ $("#btn_estacionar").on("click", function (e) {
     $("input[name='c00_entrada']").attr("realdate", timestamp);
 });
 
+$("#btn-mover").on("click", function (e) {
+    console.log("Mover carro");
+});
+
 // FUNCAO DE LISTAR OS CARROS - CARREGADA SEMPRE QUE home.html EH CARREGADO
 function listarCarrosDashboard() {
     var response = callAjaxFunctions('listarCarros'); // FAZ O CALLBACK DO AJAX PASSANDO A FUNCAO DO PHP DESEJADA
@@ -34,8 +38,9 @@ function listarCarrosDashboard() {
 function FillTable(carlist) {
     const table = document.getElementById("tbody");
     if (carlist.length === 0) {
-        $("#vagas_ocupadas").hmtl(0);
+        $("#vagas_ocupadas").html("0");
         table.innerHTML = "";
+        NoResults();
     } else {
         var cont = 0;
         table.innerHTML = "";
@@ -60,16 +65,26 @@ function FillTable(carlist) {
                         break;
                     case 5:
                         const colBotao = document.createElement('td');
+                        colBotao.style.display = "flex";
                         row.appendChild(colBotao);
-                        const btn = document.createElement('button');
-                        btn.innerHTML = "Saída";
-                        btn.classList.add('btn');
-                        btn.classList.add('btn-danger');
-                        btn.classList.add('btn-carro-saida');
-                        btn.dataset.bsToggle = "modal";
-                        btn.dataset.bsTarget = "#Saida";
-                        btn.setAttribute('onclick', 'abrirModalPreenchido("' + carlist[i]['placa_carro'] + '")'); // Passa a placa do carro para a função abrirModalPreenchido
-                        colBotao.appendChild(btn);
+                        const btnSaida = document.createElement('button');
+                        btnSaida.innerHTML = "Saída";
+                        btnSaida.classList.add('btn');
+                        btnSaida.classList.add('btn-danger');
+                        btnSaida.classList.add('btn-carro-saida');
+                        btnSaida.dataset.bsToggle = "modal";
+                        btnSaida.dataset.bsTarget = "#Saida";
+                        btnSaida.setAttribute('onclick', 'abrirModalPreenchidoSaida("' + carlist[i]['placa_carro'] + '")'); // Passa a placa do carro para a função abrirModalPreenchido
+                        const btnMover = document.createElement('button');
+                        btnMover.innerHTML = "Mover";
+                        btnMover.classList.add('btn');
+                        btnMover.classList.add('btn-primary');
+                        btnMover.classList.add('btn-carro-mover');
+                        btnMover.dataset.bsToggle = "modal";
+                        btnMover.dataset.bsTarget = "#Mover";
+                        btnMover.setAttribute('onclick', 'abrirModalPreenchidoMover("' + carlist[i]['placa_carro'] + '")');
+                        colBotao.appendChild(btnMover);
+                        colBotao.appendChild(btnSaida);
                         break;
                 }
                 row.appendChild(col);
@@ -103,14 +118,19 @@ function callAjaxFunctions(funcao, infos) {
     return response;
 }
 // MODAL DE DAR SAIDA PREENCHIDO
-function abrirModalPreenchido(placa) {
+function abrirModalPreenchidoSaida(placa) {
     var response = callAjaxFunctions('selectCarro', placa);
-    $("#placa-titulo").html(response[0][1]);
+    $("#placa-titulo-saida").html(response[0][1]);
     $("#entrada-modal").html(new Date(response[0][4]).toString().substring(16, 21));
     $("#saida-modal").html(new Date().toString().substring(16, 21))
     var dataTemp = new Date();
     var horasPermanecidas = Math.floor((dataTemp.getTime() - response[0][4]) / 60 / 60 / 1000);
     calcularPrecoSaida(horasPermanecidas);
+}
+function abrirModalPreenchidoMover(placa) {
+    var response = callAjaxFunctions('selectCarro', placa);
+    $("#placa-titulo-mover").html(response[0][1]);
+    $("input[name='vaga_atual']").val(response[0][3]);
 }
 
 function calcularPrecoSaida(horas) {
@@ -118,14 +138,14 @@ function calcularPrecoSaida(horas) {
         var response = callAjaxFunctions('calcularPrecoSaida', 'taxaFixa');
         $("#total-modal").html("R$" + response);
     } else {
-        var res = callAjaxFunctions('calcularPrecoSaida','0');
+        var res = callAjaxFunctions('calcularPrecoSaida', '0');
         total = res * horas;
         $("#total-modal").html("R$" + total);
     }
 }
 
 function saidaCarro() {
-    var placa = $("#placa-titulo").html();
+    var placa = $("#placa-titulo-saida").html();
     var response = callAjaxFunctions('saidaCarro', placa);
     if (response != 0) {
         listarCarrosDashboard();
@@ -137,11 +157,30 @@ function saidaCarro() {
     }
 }
 
+function moverCarro() {
+    var placa = $("#placa-titulo-mover").html();
+    var direcionada = $("input[name='vaga_direcionada']").val();
+
+    let infos = [
+        direcionada,
+        placa
+    ];
+    var response = callAjaxFunctions('moverCarro', infos);
+    if (response != 0) {
+        listarCarrosDashboard();
+    } else if (response == 200) {
+        alert("Vaga inválida"); // ERRO PRA MOVER O CARRO
+    } else {
+        alert("Ocorreu um erro inesperado - Contate um admnistrador");
+    }
+}
+
+
+// FUNCAO QUE INSERE O "SEM RESULTADOS QUANDO NÃO TEM NENHUM CARRO REGISTRADO"
 function NoResults() {
     const table = $("#tbody");
     const div = document.createElement('div');
-    div.style.textAlign = 'center';
-    table.appendChild(div);
+    table.append(div);
     const msg = document.createElement('h6');
     msg.innerHTML = "Sem carros estacionados";
     div.appendChild(msg);
@@ -181,14 +220,20 @@ function estacionar() {
                 $("input[name='c00_vaga']").val("");
                 listarCarrosDashboard();
                 break;
+            case '199':
+                alert('Seu estacionamento não possui essa quantidade de vagas');
+                break;
+            case '200':
+                alert('Vaga inválida. Insira um valor válido.');
+                break;
             case '201':
-                alert("Limite de carros atingido");
+                alert("Um carro com esta placa está estacionado atualmente");
                 break;
             case '202':
-                alert('Este carro já está estacionado');
+                alert('Esta vaga já está ocupada');
                 break;
             case '203':
-                alert('Um carro já está ocupando está vaga');
+                alert('Não cabem mais carros no seu estacionamento');
                 break;
         }
     }
