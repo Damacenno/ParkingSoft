@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="css/index.css">
+    <title>ParkinSoft | Login</title>
+</head>
+<body>
+    <div id="container">
+        <div id="panel">
+            <img src="assets/img/1342304.jpeg" style="width: 100%; height: 100%;">
+        </div>
+        <div id="login_panel">
+            <div id="login_form">
+                <h3>Entre na sua conta</h3>
+                    <div class="mb-3">
+                      <label for="login_input" class="form-label">Login</label>
+                      <input name="login" type="email" class="form-control" id="login_input" aria-describedby="emailHelp">
+                    </div>
+                    <div class="mb-3">
+                      <label for="senha_input" class="form-label">Senha</label>
+                      <input name="senha" type="password" class="form-control" id="senha_input">
+                    </div>
+                    <div class="mb-3 form-check">
+                      <input type="checkbox" class="form-check-input" id="exampleCheck1">
+                      <label class="form-check-label" for="exampleCheck1">Guardar sessão</label>
+                    </div>
+                    <button class="btn btn-primary btn-entrar" onclick="loging()">Entrar</button>
+            </div>
+            <div class="notH btn">
+              <label>Esqueceu sua senha?</label>
+              <br><a href="pages/cadastro.html" style="color: black;"><b>Recuperar</b></a>
+            </div>
+        </div>
+    </div>
+    <div id="loading">
+        <div id="loader">
+            <img src="assets/svg/Blocks-1s-200px.svg">
+        </div>
+    </div>
+</body>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+<script src="js/jquery-3.7.1.min.js"></script>
+<script src="js/logAccount.js"></script>
+</html>
