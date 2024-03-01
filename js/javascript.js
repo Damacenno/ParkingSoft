@@ -173,6 +173,22 @@ function moverCarro() {
     } else {
         alert("Ocorreu um erro inesperado - Contate um admnistrador");
     }
+
+    switch(response){
+        case '199':
+            alert('Vaga além do limite');
+            break;
+        case '200':
+            alert("Vaga inválida");
+        break;
+        case '201':
+            alert("Vaga já ocupada");
+            break;
+        case '0':
+            alert("Erro inesperado - Contate um administrador");
+            break;
+
+    }
 }
 
 

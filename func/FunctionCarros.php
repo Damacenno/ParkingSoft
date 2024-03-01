@@ -225,6 +225,8 @@ function moverCarro($conn, $infos)
     $id = $_SESSION['user']['id'];
     $total = $_SESSION['user']['total-vagas'];
     if ($infos[0] > $total){
+        return '199';
+    } else if($infos[0] <= 0){
         return '200';
     } else {
         $sql = "SELECT * FROM carros WHERE `id_estacionamento` = ? AND  `vaga_carro` = ? AND `status_pago_carro` = 0";
@@ -235,7 +237,7 @@ function moverCarro($conn, $infos)
             $stmt->close();
 
             if ($result->num_rows > 0) {
-                return 0;
+                return '201';
             } else {
                 $sql = "UPDATE `carros` SET `vaga_carro`=? WHERE `placa_carro` = ? AND  `id_estacionamento` = ? AND `status_pago_carro`= 0";
                 $stmt = $conn->prepare($sql);
@@ -247,7 +249,7 @@ function moverCarro($conn, $infos)
                 } else {
                     $stmt->close();
                     $conn->close();
-                    return 0;
+                    return '0';
                 }
             }
         }
