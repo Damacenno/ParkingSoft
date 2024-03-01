@@ -167,7 +167,7 @@ function calcularPrecoSaida($conn, $switch)
 {
     $id = $_SESSION['user']['id'];
     if ($switch == "taxaFixa") {
-        $sql = "SELECT preco_fixo FROM configuracoes WHERE `id_estacionamento` = ?";
+        $sql = "SELECT preco_fixo FROM config_estacionamento WHERE `id_estacionamento` = ?";
         $stmt = $conn->prepare($sql);
         $stmt->bind_param("i", $id);
         if ($stmt->execute()) {
@@ -184,7 +184,7 @@ function calcularPrecoSaida($conn, $switch)
             }
         }
     } else {
-        $sql = "SELECT preco_hora FROM configuracoes WHERE `id_estacionamento` = ?";
+        $sql = "SELECT preco_hora FROM config_estacionamento WHERE `id_estacionamento` = ?";
         $stmt = $conn->prepare($sql);
         $stmt->bind_param("i", $id);
         if ($stmt->execute()) {
