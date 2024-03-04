@@ -16,24 +16,25 @@ $registros = listar_registros($conn, 1);
                 <th scope="col">Saída</th>
             </tr>
         </thead>
-        <tbody id="tbody">
-            <?php if ($registros) {
+        <tbody>
+            <?php
+            if ($registros) {
                 foreach ($registros as $registro) {
                     echo "<tr>";
                     echo "<td>" . $registro['placa_carro'] . "</td>";
                     echo "<td>" . $registro['modelo_carro'] . "</td>";
                     echo "<td>" . $registro['vaga_carro'] . "</td>";
-                    echo "<td>" . $registro['entrada_carro'] . "</td>";
-                    echo "<td>" . $registro['saida_carro'] . "</td>";
+                    echo "<td>" . date('H:i', $registro['entrada_carro'] / 1000) . "</td>";
+                    echo "<td>" . date('H:i', $registro['saida_carro'] / 1000) . "</td>";
                     echo "</tr>";
                 }
-                ?>
-
-                <?php
             } else {
-                echo "Nenhum Registro...";
-            } ?>
-            <td></td>
+                echo "<tr><td colspan='5'>Nenhum Registro...</td></tr>";
+            }
+
+            ?>
+
         </tbody>
+
     </table>
 </div>
