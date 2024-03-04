@@ -19,7 +19,7 @@
                 foreach ($row as $r) {
                     for ($a=1; $a <=  $r; $a++){
                         echo "<div class='vaga'>";
-                        $sql2 = "SELECT * FROM carros WHERE `id_estacionamento`= 1 AND `status_pago_carro` = 0 AND `vaga_carro` = $a";
+                        $sql2 = "SELECT * FROM registros WHERE `id_estacionamento`= 1 AND `status_pago_carro` = 0 AND `vaga_carro` = $a";
                         $stmt2 = $conn->prepare($sql2);
                         if($stmt2->execute()){
                             $result2 = $stmt2->get_result();

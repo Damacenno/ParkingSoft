@@ -136,11 +136,21 @@ function abrirModalPreenchidoMover(placa) {
 }
 
 function calcularPrecoSaida(horas) {
-    if (horas < 1) {
+    if (horas < 1) { // SE FOR MENOS DE UMA HORA USA A TAXA FIXA DO ESTACIONAMENTO
         var response = callAjaxFunctions('calcularPrecoSaida', 'taxaFixa');
         $("#total-modal").html("R$" + response);
+    } else if (horas > 24){ // SE FOR MAIS DE UMA HORA
+        var checagem = callAjaxFunctions('checaAceitaDiaria'); // VERIFICA SE O ESTACIONAMENTO EM QUESTÃO ACEITA DIARIA
+        if(checagem == 0){ // SE NAO ACEITA DIARIA
+            var res = callAjaxFunctions('calcularPrecoSaida', 'taxaComum'); // BUSCA A TAXA COMUM - O PRECO POR HORA
+            total = res * horas;
+            $("#total-modal").html("R$" + total);
+        } else if (checagem == 1) { // SE ACEITA DIARIA
+            var resp = callAjaxFunctions('calcularPrecoSaida', 'taxaDiaria'); // BUSCA A TAXA DIARIA - PRECO DIARIA
+            $("#total-modal").html("R$" + resp);
+        }
     } else {
-        var res = callAjaxFunctions('calcularPrecoSaida', '0');
+        var res = callAjaxFunctions('calcularPrecoSaida', 'taxaComum');
         total = res * horas;
         $("#total-modal").html("R$" + total);
     }
