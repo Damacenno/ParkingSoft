@@ -169,6 +169,16 @@
                         </div>
                     </div>
                 </div>
+                <div class="col-md-2">
+                    <div class="form-check">
+                    <a href="termos/politica-parking.html" target="_blank">Termos de Uso</a>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="form-check">
+                    <a href="termos/politica-parking.html" target="_blank">Politicas de Privacidade</a>
+                    </div>
+                </div>
                 <div class="col-12 d-flex justify-content-end">
                     <button type="submit" class="btn btn-primary">Salvar Alterações</button>
                 </div>

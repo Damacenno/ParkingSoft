@@ -122,7 +122,7 @@ function abrirModalPreenchidoSaida(placa) {
     var response = callAjaxFunctions('selectCarro', placa);
     $("#placa-titulo-saida").html(response[0][1]);
     $("#entrada-modal").html(new Date(response[0][4]).toString().substring(16, 21));
-    $("#saida-modal").html(new Date().toString().substring(16, 21))
+    $("#saida-modal").html(new Date().toString().substring(16, 21));
     var dataTemp = new Date();
     var horasPermanecidas = Math.floor((dataTemp.getTime() - response[0][4]) / 60 / 60 / 1000);
     calcularPrecoSaida(horasPermanecidas);
