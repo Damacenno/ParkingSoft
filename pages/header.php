@@ -1,4 +1,7 @@
-<?php session_start(); ?>
+<?php
+session_start();
+require_once("../func/Function_registros.php");
+?>
 
 <head>
     <meta charset="UTF-8">
@@ -34,7 +37,7 @@
         <li><a href="dashboard.php"><i
                     class="<?php echo (basename($_SERVER['PHP_SELF'], '.php') == "Dashboard") ? "active" : ''; ?> fas fa-tachometer-alt"></i>
                 Dashboard</a></li>
-                <li><a href="configuracoes.php"><i
+        <li><a href="configuracoes.php"><i
                     class="<?php echo (basename($_SERVER['PHP_SELF'], '.php') == "Configuracoes") ? "active" : ''; ?> fas fa-cogs"></i>
                 Configurações</a></li>
         <li><a href="relatar.php" target="_blank"><i
