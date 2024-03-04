@@ -119,7 +119,7 @@ function callAjaxFunctions(funcao, infos) {
 }
 // MODAL DE DAR SAIDA PREENCHIDO
 function abrirModalPreenchidoSaida(placa) {
-    var response = callAjaxFunctions('selectCarro', placa);
+    var response = callAjaxFunctions('selectRegistro', placa);
     $("#placa-titulo-saida").html(response[0][1]);
     $("#entrada-modal").html(new Date(response[0][4]).toString().substring(16, 21));
     $("#saida-modal").html(new Date().toString().substring(16, 21));
@@ -128,7 +128,7 @@ function abrirModalPreenchidoSaida(placa) {
     calcularPrecoSaida(horasPermanecidas);
 }
 function abrirModalPreenchidoMover(placa) {
-    var response = callAjaxFunctions('selectCarro', placa);
+    var response = callAjaxFunctions('selectRegistro', placa);
     $("#placa-titulo-mover").html(response[0][1]);
     $("input[name='vaga_atual']").val(response[0][3]);
 }
@@ -146,7 +146,7 @@ function calcularPrecoSaida(horas) {
 
 function saidaCarro() {
     var placa = $("#placa-titulo-saida").html();
-    var response = callAjaxFunctions('saidaCarro', placa);
+    var response = callAjaxFunctions('saidaRegistro', placa);
     if (response != 0) {
         listarCarrosDashboard();
         $('#box').prop('checked', false);
@@ -165,7 +165,7 @@ function moverCarro() {
         direcionada,
         placa
     ];
-    var response = callAjaxFunctions('moverCarro', infos);
+    var response = callAjaxFunctions('moverRegistro', infos);
     if (response != 0) {
         listarCarrosDashboard();
     } else if (response == 200) {
@@ -227,7 +227,7 @@ function estacionar() {
         }
     }
     if (i == 4) {
-        var response = callAjaxFunctions('estacionarCarro', infos);
+        var response = callAjaxFunctions('estacionarRegistro', infos);
         switch (response) {
             case 1:
                 $("#Estacionar").modal('hide');

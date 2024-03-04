@@ -25,7 +25,7 @@ if (isset($_POST["function"])) {
             break;
     }
 } else {
-    echo json_encode("não passou");
+    //echo json_encode("não passou");
 }
 
 function estacionarRegistro($conn, $infos)
