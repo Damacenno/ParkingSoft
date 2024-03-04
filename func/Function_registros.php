@@ -1,6 +1,6 @@
 <?php
-require_once("conectDB.php");
 session_start();
+require_once("conectDB.php");
 
 
 if (isset($_POST["function"])) {
@@ -25,7 +25,7 @@ if (isset($_POST["function"])) {
             break;
     }
 } else {
-    echo "não passou";
+    echo json_encode("não passou");
 }
 
 function estacionarRegistro($conn, $infos)
@@ -106,7 +106,7 @@ function listarRegistros($conn)
 {
     $id = $_SESSION['user']['id'];
     $sql = "SELECT * FROM registros WHERE `status_pago_carro`= 0 AND `id_estacionamento` = ?";
-    echo $sql;
+
     $stmt = $conn->prepare($sql);
     $stmt->bind_param("i", $id);
     if ($stmt->execute()) {

@@ -26,7 +26,7 @@ $("#btn-mover").on("click", function (e) {
 
 // FUNCAO DE LISTAR OS CARROS - CARREGADA SEMPRE QUE home.html EH CARREGADO
 function listarCarrosDashboard() {
-    var response = callAjaxFunctions('listarCarros'); // FAZ O CALLBACK DO AJAX PASSANDO A FUNCAO DO PHP DESEJADA
+    var response = callAjaxFunctions('listarRegistros'); // FAZ O CALLBACK DO AJAX PASSANDO A FUNCAO DO PHP DESEJADA
     if (response != "0") {
         FillTable(response);
         // FUNCAO QUE PREENCHA A TABELA COM AS INFOS
@@ -100,7 +100,7 @@ function FillTable(carlist) {
 function callAjaxFunctions(funcao, infos) {
     var response = "";
     $.ajax({
-        url: "../func/FunctionCarros.php",
+        url: "../func/Function_registros.php",
         type: "POST",
         async: false,
         data: { function: funcao, info: infos }, // DADOS PARA SEREM JOGADOS NO ARQUIVO PHP

@@ -1,6 +1,6 @@
 <?php require "header.php";
 $registros = listar_registros($conn, 1);
-var_dump($registros);
+// var_dump($registros);
 ?>
 
 <div class="content_main" id="container-form">
