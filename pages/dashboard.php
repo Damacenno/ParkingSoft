@@ -17,6 +17,11 @@ $registros = listar_registros($conn, 1);
         <div id="container" style="width:95%;"></div>
     </figure>
 
+  
+    <figure class="highcharts-figure">
+        <div id="container" style="width:95%;"></div>
+    </figure>
+
     <table id="tabelaCarros" class="table table-striped table-hover">
         <thead>
             <tr>
