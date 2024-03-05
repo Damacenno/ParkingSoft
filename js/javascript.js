@@ -117,6 +117,7 @@ function callAjaxFunctions(funcao, infos) {
     });
     return response;
 }
+
 // MODAL DE DAR SAIDA PREENCHIDO
 function abrirModalPreenchidoSaida(placa) {
     var response = callAjaxFunctions('selectRegistro', placa);
@@ -127,6 +128,7 @@ function abrirModalPreenchidoSaida(placa) {
     var horasPermanecidas = Math.floor((dataTemp.getTime() - response[0][4]) / 60 / 60 / 1000);
     calcularPrecoSaida(horasPermanecidas);
 }
+
 function abrirModalPreenchidoMover(placa) {
     var response = callAjaxFunctions('selectRegistro', placa);
     $("#placa-titulo-mover").html(response[0][1]);

@@ -206,7 +206,7 @@ function calcularPrecoSaida($conn, $switch)
 function saidaRegistro($conn, $placa)
 {
     $id = $_SESSION['user']['id'];
-    $sql = "UPDATE registros SET status_pago_carro='1' WHERE placa_carro = ? AND  id_estacionamento = ? AND status_pago_carro= 0";
+    $sql = "UPDATE `registros` SET `status_pago_carro`='1' WHERE `placa_carro` = ? AND  `id_estacionamento` = ? AND `status_pago_carro`= 0";
     $stmt = $conn->prepare($sql);
     $stmt->bind_param("si", $placa, $id);
     if ($stmt->execute()) {

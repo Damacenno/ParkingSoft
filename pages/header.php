@@ -1,8 +1,3 @@
-<?php
-
-require_once("../func/Function_registros.php");
-?>
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -25,7 +20,6 @@ require_once("../func/Function_registros.php");
         crossorigin="anonymous"></script>
     <script src="../js/jquery-3.7.1.min.js"></script>
     <script src="../js/javascript.js"></script>
-    <script src="../js/graficos.js"></script>
     <link rel="stylesheet" type="text/css" href="../css/style.css">
     <link rel="icon" href="../assets/img/logo.png">
     <title><?php echo ucfirst(basename($_SERVER['PHP_SELF'], '.php')) . " | ParkingSoft" ?></title>
