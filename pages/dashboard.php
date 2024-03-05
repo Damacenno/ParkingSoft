@@ -13,7 +13,6 @@ $registros = listar_registros($conn, 1);
 
 
 <div class="content_main" id="container-form">
-
     <figure class="highcharts-figure">
         <div id="container" style="width:95%;"></div>
     </figure>
@@ -129,6 +128,7 @@ $registros = listar_registros($conn, 1);
                 url: "../func/Function_grafico.php",
                 data:
                 {
+                    ajax: true
                 },
                 cache: false,
                 dataType: "json",

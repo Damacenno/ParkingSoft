@@ -40,7 +40,7 @@
     </ul>
 </div>
 <div class="content_header">
-    <h4><?php echo strtoupper(basename($_SERVER['PHP_SELF'], '.php')) ?></h4>
+    <h4><?php echo ucfirst(basename($_SERVER['PHP_SELF'], '.php')) ?></h4>
     <button type="button" id="sidebar_active" class="btn btn-info">
         <i class="fas fa-align-left"></i>
     </button>

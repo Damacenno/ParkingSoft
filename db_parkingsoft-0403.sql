@@ -1,8 +1,8 @@
 -- --------------------------------------------------------
 -- Servidor:                     127.0.0.1
--- Versão do servidor:           10.4.27-MariaDB - mariadb.org binary distribution
+-- Versão do servidor:           10.4.28-MariaDB - mariadb.org binary distribution
 -- OS do Servidor:               Win64
--- HeidiSQL Versão:              12.3.0.6589
+-- HeidiSQL Versão:              12.5.0.6677
 -- --------------------------------------------------------
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
@@ -30,6 +30,7 @@ CREATE TABLE IF NOT EXISTS `config_estacionamento` (
   `aceita_convenio` int(11) DEFAULT NULL,
   `preco_hora` int(11) DEFAULT NULL,
   `preco_fixo` int(11) DEFAULT NULL,
+  `preco_diaria` int(11) DEFAULT NULL,
   `vinculo_convenio` int(11) DEFAULT NULL,
   PRIMARY KEY (`id_estacionamento`),
   KEY `id_estacionamento` (`id_estacionamento`),
@@ -37,8 +38,9 @@ CREATE TABLE IF NOT EXISTS `config_estacionamento` (
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- Copiando dados para a tabela parkingsoft.config_estacionamento: ~1 rows (aproximadamente)
-INSERT INTO `config_estacionamento` (`id_estacionamento`, `envia_sms`, `tipo_cobranca`, `aceita_diaria`, `aceita_mensal`, `aceita_pag_ant`, `aceita_convenio`, `preco_hora`, `preco_fixo`, `vinculo_convenio`) VALUES
-	(1, 0, 0, 0, 0, 0, 0, 7, 4, 78);
+DELETE FROM `config_estacionamento`;
+INSERT INTO `config_estacionamento` (`id_estacionamento`, `envia_sms`, `tipo_cobranca`, `aceita_diaria`, `aceita_mensal`, `aceita_pag_ant`, `aceita_convenio`, `preco_hora`, `preco_fixo`, `preco_diaria`, `vinculo_convenio`) VALUES
+	(1, 0, 0, 1, 0, 0, 0, 3, 4, 28, 78);
 
 -- Copiando estrutura para tabela parkingsoft.registros
 CREATE TABLE IF NOT EXISTS `registros` (
@@ -54,14 +56,16 @@ CREATE TABLE IF NOT EXISTS `registros` (
   PRIMARY KEY (`id_registro`) USING BTREE,
   KEY `id_estacionamento` (`id_estacionamento`),
   CONSTRAINT `estac` FOREIGN KEY (`id_estacionamento`) REFERENCES `usuarios` (`id_estac`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=99 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=100 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- Copiando dados para a tabela parkingsoft.registros: ~4 rows (aproximadamente)
+-- Copiando dados para a tabela parkingsoft.registros: ~5 rows (aproximadamente)
+DELETE FROM `registros`;
 INSERT INTO `registros` (`id_registro`, `placa_carro`, `modelo_carro`, `vaga_carro`, `data_ocorrencia_carro`, `entrada_carro`, `saida_carro`, `status_pago_carro`, `id_estacionamento`) VALUES
-	(92, '123ABC', 'Eclipse', 2, NULL, 1709226928801, NULL, 0, 1),
+	(92, '123ABC', 'Eclipse', 2, NULL, 1709226928801, NULL, 1, 1),
 	(93, 'LKJ566', 'Eclipse', 7, NULL, 1709226935346, NULL, 0, 1),
 	(94, 'VUC871', 'Jaguar', 3, NULL, 1709226940794, NULL, 0, 1),
-	(98, 'JEA456', 'Marea', 4, NULL, 1709292315583, NULL, 0, 1);
+	(98, 'JEA456', 'Marea', 4, NULL, 1709292315583, NULL, 0, 1),
+	(99, 'ABC123', 'Kwid', 6, NULL, 1709558226728, NULL, 0, 1);
 
 -- Copiando estrutura para tabela parkingsoft.usuarios
 CREATE TABLE IF NOT EXISTS `usuarios` (
@@ -76,6 +80,7 @@ CREATE TABLE IF NOT EXISTS `usuarios` (
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- Copiando dados para a tabela parkingsoft.usuarios: ~1 rows (aproximadamente)
+DELETE FROM `usuarios`;
 INSERT INTO `usuarios` (`id_estac`, `nome_estac`, `cnpj_estac`, `login_estac`, `senha_estac`, `total_vagas_estac`, `status_pago_estac`) VALUES
 	(1, 'Joao Estacionamentos', '11111111000111', 'admin', '$2y$10$Zn9VYWg3BnbeOb9OcbDhxuE4gA0yXFErtWNr0p1YI95BzOYatWKcC', 7, NULL);
 

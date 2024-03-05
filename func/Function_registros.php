@@ -23,6 +23,9 @@ if (isset($_POST["function"])) {
         case 'calcularPrecoSaida':
             echo json_encode(calcularPrecoSaida($conn, $_POST['info']));
             break;
+        case 'checaAceitaDiaria':
+            echo json_encode(checaAceitaDiaria($conn));
+            break;
     }
 } else {
     //echo json_encode("não passou");
@@ -167,7 +170,7 @@ function calcularPrecoSaida($conn, $switch)
 {
     $id = $_SESSION['user']['id'];
     if ($switch == "taxaFixa") {
-        $sql = "SELECT preco_fixo FROM config_estacionamento WHERE `id_estacionamento` = ?";
+        $sql = "SELECT `preco_fixo` FROM config_estacionamento WHERE `id_estacionamento` = ?";
         $stmt = $conn->prepare($sql);
         $stmt->bind_param("i", $id);
         if ($stmt->execute()) {
@@ -183,8 +186,25 @@ function calcularPrecoSaida($conn, $switch)
                 return 0;
             }
         }
-    } else {
-        $sql = "SELECT preco_hora FROM config_estacionamento WHERE `id_estacionamento` = ?";
+    } else if ($switch == 'taxaDiaria') {
+        $sql = "SELECT `preco_diaria` FROM config_estacionamento WHERE `id_estacionamento` = ?";
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param("i", $id);
+        if ($stmt->execute()) {
+            $result = $stmt->get_result();
+            $stmt->close();
+
+            if ($result->num_rows > 0) {
+                while ($row = $result->fetch_assoc()) {
+                    $output = $row['preco_diaria'];
+                }
+                return $output;
+            } else {
+                return 0;
+            }
+        }
+    } else if ($switch == 'taxaComum') {
+        $sql = "SELECT `preco_hora` FROM config_estacionamento WHERE `id_estacionamento` = ?";
         $stmt = $conn->prepare($sql);
         $stmt->bind_param("i", $id);
         if ($stmt->execute()) {
@@ -199,6 +219,28 @@ function calcularPrecoSaida($conn, $switch)
             } else {
                 return 0;
             }
+        }
+    }
+}
+
+function checaAceitaDiaria($conn)
+{
+    $id = $_SESSION['user']['id'];
+
+    $sql = "SELECT `aceita_diaria` FROM config_estacionamento WHERE `id_estacionamento` = ?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("i", $id);
+    if ($stmt->execute()) {
+        $result = $stmt->get_result();
+        $stmt->close();
+
+        if ($result->num_rows > 0) {
+            while ($row = $result->fetch_assoc()) {
+                $output = $row['aceita_diaria'];
+            }
+            return $output;
+        } else {
+            return false;
         }
     }
 }
