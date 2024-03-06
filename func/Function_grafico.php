@@ -7,7 +7,7 @@ if ($_REQUEST) {
     $registros_vagas = array();
     foreach ($registros as $registro) {
         // Extrai a data de entrada do registro e converte para milissegundos
-        $valorX = $registro['entrada_carro'] * 1000; // Multiplica por 1000 para converter para milissegundos
+        $valorX = $registro['entrada_auto'] * 1000; // Multiplica por 1000 para converter para milissegundos
 
         // Extrai o valor Y do registro (substitua 'valorY' pelo nome do campo correto)
         $valorY = 1; // Substitua 'valorY' pelo nome do campo correto

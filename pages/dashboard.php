@@ -35,11 +35,11 @@ $registros = listar_registros($conn, 1);
         <?php if ($registros) {
             foreach ($registros as $registro) {
                 echo "<tr>";
-                echo "<td>" . $registro['placa_carro'] . "</td>";
-                echo "<td>" . $registro['modelo_carro'] . "</td>";
-                echo "<td>" . $registro['vaga_carro'] . "</td>";
-                echo "<td>" . date('H:i', $registro['entrada_carro'] / 1000) . "</td>";
-                echo "<td>" . date('H:i', $registro['saida_carro'] / 1000) . "</td>";
+                echo "<td>" . $registro['placa_auto'] . "</td>";
+                echo "<td>" . $registro['modelo_auto'] . "</td>";
+                echo "<td>" . $registro['vaga_auto'] . "</td>";
+                echo "<td>" . date('H:i', $registro['entrada_auto'] / 1000) . "</td>";
+                echo "<td>" . date('H:i', $registro['saida_auto'] / 1000) . "</td>";
                 echo "</tr>";
             }
         } ?></tbody>

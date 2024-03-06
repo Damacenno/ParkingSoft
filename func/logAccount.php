@@ -19,7 +19,8 @@ if ($stmt->execute()) {
         if (password_verify($senha, $senha_hash)) {
             $_SESSION['user'] = [
                 'id' => $row['id_estac'],
-                'total-vagas' => $row['total_vagas_estac'],
+                'total-vagas_carro' => $row['total_vagas_carro_estac'],
+                'total-vagas_moto' => $row['total_vagas_moto_estac'],
             ];
             echo json_encode(200);
         } else {

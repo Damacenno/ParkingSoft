@@ -42,28 +42,37 @@ function FillTable(carlist) {
         table.innerHTML = "";
         NoResults();
     } else {
-        var cont = 0;
+        var contCarro = 0;
+        var contMoto = 0;
         table.innerHTML = "";
         for (var i = 0; i < carlist.length; i++) {
             const row = document.createElement('tr');
             row.classList.add('car-row');
-            for (var b = 1; b <= 5; b++) { // Ajuste o limite para 5 para incluir todas as colunas
+            for (var b = 1; b <= 7; b++) { // Ajuste o limite para 5 para incluir todas as colunas
                 const col = document.createElement('td');
                 // Renderiza cada propriedade do objeto na tabela
                 switch (b) {
                     case 1:
-                        col.innerHTML = carlist[i]['placa_carro']; // Placa do carro
+                        col.innerHTML = carlist[i]['categoria'];
+                        if (carlist[i]['categoria']=='Moto'){
+                            contMoto++;
+                        } else if (carlist[i]['categoria']=='Carro'){
+                            contCarro++;
+                        }
                         break;
                     case 2:
-                        col.innerHTML = carlist[i]['modelo_carro']; // Modelo do carro
+                        col.innerHTML = carlist[i]['placa_auto']; // Placa do carro
                         break;
                     case 3:
-                        col.innerHTML = carlist[i]['vaga_carro']; // Vaga do carro
+                        col.innerHTML = carlist[i]['modelo_auto']; // Modelo do carro
                         break;
                     case 4:
-                        col.innerHTML = new Date(carlist[i]['entrada_carro']).toString().substring(16, 21);  // Entrada do carro
+                        col.innerHTML = carlist[i]['vaga_auto']; // Vaga do carro
                         break;
                     case 5:
+                        col.innerHTML = new Date(carlist[i]['entrada_auto']).toString().substring(16, 21);  // Entrada do carro
+                        break;
+                    case 6:
                         const colBotao = document.createElement('td');
                         colBotao.style.display = "flex";
                         row.appendChild(colBotao);
@@ -74,7 +83,7 @@ function FillTable(carlist) {
                         btnSaida.classList.add('btn-carro-saida');
                         btnSaida.dataset.bsToggle = "modal";
                         btnSaida.dataset.bsTarget = "#Saida";
-                        btnSaida.setAttribute('onclick', 'abrirModalPreenchidoSaida("' + carlist[i]['placa_carro'] + '")'); // Passa a placa do carro para a função abrirModalPreenchido
+                        btnSaida.setAttribute('onclick', 'abrirModalPreenchidoSaida("' + carlist[i]['placa_auto'] + '")'); // Passa a placa do carro para a função abrirModalPreenchido
                         const btnMover = document.createElement('button');
                         btnMover.innerHTML = "Mover";
                         btnMover.classList.add('btn');
@@ -82,17 +91,17 @@ function FillTable(carlist) {
                         btnMover.classList.add('btn-carro-mover');
                         btnMover.dataset.bsToggle = "modal";
                         btnMover.dataset.bsTarget = "#Mover";
-                        btnMover.setAttribute('onclick', 'abrirModalPreenchidoMover("' + carlist[i]['placa_carro'] + '")');
+                        btnMover.setAttribute('onclick', 'abrirModalPreenchidoMover("' + carlist[i]['placa_auto'] + '")');
                         colBotao.appendChild(btnMover);
                         colBotao.appendChild(btnSaida);
                         break;
                 }
                 row.appendChild(col);
             }
-            cont++;
             table.appendChild(row);
         }
-        $("#vagas_ocupadas").html(cont);
+        $("#vagas_ocupadas_carro").html(contCarro);
+        $("#vagas_ocupadas_moto").html(contMoto);
     }
 }
 
@@ -221,48 +230,58 @@ function estacionar() {
     var Cmodelo = $("input[name='c00_modelo']").val();
     var Cvaga = $("input[name='c00_vaga']").val();
     var Centrada = $("input[name='c00_entrada']").attr('realdate');
+    var Ccat = $("select[name='c00_categoria']").find(":selected").val();
 
     let infos = [
         Cplaca,
         Cmodelo,
         Cvaga,
-        Centrada
+        Centrada,
+        Ccat
     ];
 
-    var i = 0;
-    for (a in infos) {
-        if (infos[a] == "") {
-            camposNulos();
-            break;
-        } else {
-            i++
-        }
-    }
-    if (i == 4) {
-        var response = callAjaxFunctions('estacionarRegistro', infos);
-        switch (response) {
-            case 1:
-                $("#Estacionar").modal('hide');
-                $("input[name='c00_placa']").val("");
-                $("input[name='c00_modelo']").val("");
-                $("input[name='c00_vaga']").val("");
-                listarCarrosDashboard();
-                break;
-            case '199':
-                alert('Seu estacionamento não possui essa quantidade de vagas');
-                break;
-            case '200':
-                alert('Vaga inválida. Insira um valor válido.');
-                break;
-            case '201':
-                alert("Um carro com esta placa está estacionado atualmente");
-                break;
-            case '202':
-                alert('Esta vaga já está ocupada');
-                break;
-            case '203':
-                alert('Não cabem mais carros no seu estacionamento');
-                break;
-        }
-    }
+    console.log(infos);
+    //$("#Estacionar").modal('hide');
+    $("input[name='c00_placa']").val("");
+    $("input[name='c00_modelo']").val("");
+    $("input[name='c00_vaga']").val("");
+    $("select[name='c00_categoria']").val('--Selecionar--').change();
+
+    //  var i = 0;
+    //  for (a in infos) {
+    //      if (infos[a] == "") {
+    //          camposNulos();
+    //          break;
+    //      } else {
+    //          i++
+    //      }
+    //  }
+    //  if (i == 4) {
+    //      var response = callAjaxFunctions('estacionarRegistro', infos);
+    //      switch (response) {
+    //          case 1:
+    //              $("#Estacionar").modal('hide');
+    //              $("input[name='c00_placa']").val("");
+    //              $("input[name='c00_modelo']").val("");
+    //              $("input[name='c00_vaga']").val("");
+    //              $("select[name='c00_categoria']").val(1);
+    //              listarCarrosDashboard();
+    //              break;
+    //          case '199':
+    //              alert('Seu estacionamento não possui essa quantidade de vagas');
+    //              break;
+    //          case '200':
+    //              alert('Vaga inválida. Insira um valor válido.');
+    //              break;
+    //          case '201':
+    //              alert("Um carro com esta placa está estacionado atualmente");
+    //              break;
+    //          case '202':
+    //              alert('Esta vaga já está ocupada');
+    //              break;
+    //          case '203':
+    //              alert('Não cabem mais carros no seu estacionamento');
+    //              break;
+    //      }
+    //  }
 }

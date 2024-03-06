@@ -40,7 +40,7 @@ function estacionarRegistro($conn, $infos)
     } else if ($infos[2] <= 0) {
         return '200';
     } else {
-        $sql = "SELECT * FROM registros WHERE `status_pago_carro`= 0 AND `id_estacionamento`= $id AND `placa_carro`= ?";
+        $sql = "SELECT * FROM registros WHERE `status_pago_auto`= 0 AND `id_estacionamento`= $id AND `placa_auto`= ?";
         $stmt = $conn->prepare($sql);
         $stmt->bind_param("s", $infos[0]);
 
@@ -51,7 +51,7 @@ function estacionarRegistro($conn, $infos)
             if ($result->num_rows > 0) {
                 return '201'; // O CARRO COM A MESMA PLACA ESTA ESTACIONADO ATUALMENTE
             } else {
-                $sql = "SELECT * FROM registros WHERE `status_pago_carro`= 0 AND `id_estacionamento`= $id AND `vaga_carro`= ?";
+                $sql = "SELECT * FROM registros WHERE `status_pago_auto`= 0 AND `id_estacionamento`= $id AND `vaga_auto`= ?";
                 $stmt = $conn->prepare($sql);
                 $stmt->bind_param("s", $infos[2]);
 
@@ -62,7 +62,7 @@ function estacionarRegistro($conn, $infos)
                     if ($result->num_rows > 0) {
                         return '202'; // EXISTE UM CARRO NESTA VAGA
                     } else {
-                        $query = "SELECT COUNT(*) as total FROM registros WHERE `id_estacionamento` = ? AND `status_pago_carro` = 0";
+                        $query = "SELECT COUNT(*) as total FROM registros WHERE `id_estacionamento` = ? AND `status_pago_auto` = 0";
                         $stmt = $conn->prepare($query);
                         $stmt->bind_param("s", $id);
 
@@ -77,7 +77,7 @@ function estacionarRegistro($conn, $infos)
                             } else {
                                 $stmt->close();
 
-                                $query = "INSERT INTO registros (`placa_carro`, `modelo_carro`, `vaga_carro`, `entrada_carro`, `status_pago_carro`,`id_estacionamento`) VALUES (?, ?, ?, ?, '0',$id)";
+                                $query = "INSERT INTO registros (`placa_auto`, `modelo_auto`, `vaga_auto`, `entrada_auto`, `status_pago_auto`,`id_estacionamento`) VALUES (?, ?, ?, ?, '0',$id)";
                                 $stmt = $conn->prepare($query);
                                 $stmt->bind_param("ssii", $infos[0], $infos[1], $infos[2], $infos[3]);
 
@@ -108,7 +108,7 @@ function estacionarRegistro($conn, $infos)
 function listarRegistros($conn)
 {
     $id = $_SESSION['user']['id'];
-    $sql = "SELECT * FROM registros WHERE `status_pago_carro`= 0 AND `id_estacionamento` = ?";
+    $sql = "SELECT * FROM registros WHERE `status_pago_auto`= 0 AND `id_estacionamento` = ?";
 
     $stmt = $conn->prepare($sql);
     $stmt->bind_param("i", $id);
@@ -121,11 +121,12 @@ function listarRegistros($conn)
         if ($result->num_rows > 0) {
             while ($row = $result->fetch_assoc()) {
                 $output[] = array(
-                    'placa_carro' => $row['placa_carro'],
-                    'modelo_carro' => $row['modelo_carro'],
-                    'vaga_carro' => $row['vaga_carro'],
-                    'entrada_carro' => $row['entrada_carro'],
-                    'saida_carro' => $row['saida_carro']
+                    'categoria' => $row['categoria'],
+                    'placa_auto' => $row['placa_auto'],
+                    'modelo_auto' => $row['modelo_auto'],
+                    'vaga_auto' => $row['vaga_auto'],
+                    'entrada_auto' => $row['entrada_auto'],
+                    'saida_auto' => $row['saida_auto']
                 );
             }
             return $output;
@@ -141,7 +142,7 @@ function listarRegistros($conn)
 function selectRegistro($conn, $placa)
 {
     $id = $_SESSION['user']['id'];
-    $sql = "SELECT * FROM registros WHERE `placa_carro` = '$placa' AND `status_pago_carro`= 0 AND `id_estacionamento`= ?";
+    $sql = "SELECT * FROM registros WHERE `placa_auto` = '$placa' AND `status_pago_auto`= 0 AND `id_estacionamento`= ?";
     $stmt = $conn->prepare($sql);
     $stmt->bind_param("i", $id);
 
@@ -153,10 +154,10 @@ function selectRegistro($conn, $placa)
             foreach ($result as $row) {
                 $output[] = array(
                     null,
-                    $row['placa_carro'],
-                    $row['modelo_carro'],
-                    $row['vaga_carro'],
-                    $row['entrada_carro']
+                    $row['placa_auto'],
+                    $row['modelo_auto'],
+                    $row['vaga_auto'],
+                    $row['entrada_auto']
                 );
             }
             return($output);
@@ -248,7 +249,7 @@ function checaAceitaDiaria($conn)
 function saidaRegistro($conn, $placa)
 {
     $id = $_SESSION['user']['id'];
-    $sql = "UPDATE `registros` SET `status_pago_carro`='1' WHERE `placa_carro` = ? AND  `id_estacionamento` = ? AND `status_pago_carro`= 0";
+    $sql = "UPDATE `registros` SET `status_pago_auto`='1' WHERE `placa_auto` = ? AND  `id_estacionamento` = ? AND `status_pago_auto`= 0";
     $stmt = $conn->prepare($sql);
     $stmt->bind_param("si", $placa, $id);
     if ($stmt->execute()) {
@@ -271,7 +272,7 @@ function moverRegistro($conn, $infos)
     } else if ($infos[0] <= 0) {
         return '200';
     } else {
-        $sql = "SELECT * FROM registros WHERE `id_estacionamento` = ? AND  `vaga_carro` = ? AND `status_pago_carro` = 0";
+        $sql = "SELECT * FROM registros WHERE `id_estacionamento` = ? AND  `vaga_auto` = ? AND `status_pago_auto` = 0";
         $stmt = $conn->prepare($sql);
         $stmt->bind_param("ii", $id, $infos[0]);
         if ($stmt->execute()) {
@@ -281,7 +282,7 @@ function moverRegistro($conn, $infos)
             if ($result->num_rows > 0) {
                 return '201';
             } else {
-                $sql = "UPDATE `registros` SET `vaga_carro`=? WHERE `placa_carro` = ? AND  `id_estacionamento` = ? AND `status_pago_carro`= 0";
+                $sql = "UPDATE `registros` SET `vaga_auto`=? WHERE `placa_auto` = ? AND  `id_estacionamento` = ? AND `status_pago_auto`= 0";
                 $stmt = $conn->prepare($sql);
                 $stmt->bind_param("isi", $infos[0], $infos[1], $id);
                 if ($stmt->execute()) {
