@@ -20,9 +20,6 @@ $("#btn_estacionar").on("click", function (e) {
     $("input[name='c00_entrada']").attr("realdate", timestamp);
 });
 
-$("#btn-mover").on("click", function (e) {
-    console.log("Mover carro");
-});
 
 // FUNCAO DE LISTAR OS CARROS - CARREGADA SEMPRE QUE home.html EH CARREGADO
 function listarCarrosDashboard() {
@@ -38,7 +35,8 @@ function listarCarrosDashboard() {
 function FillTable(carlist) {
     const table = document.getElementById("tbody");
     if (carlist.length === 0) {
-        $("#vagas_ocupadas").html("0");
+        $("#vagas_ocupadas_carro").html("0");
+        $("#vagas_ocupadas_moto").html("0");
         table.innerHTML = "";
         NoResults();
     } else {
@@ -54,20 +52,20 @@ function FillTable(carlist) {
                 switch (b) {
                     case 1:
                         col.innerHTML = carlist[i]['categoria'];
-                        if (carlist[i]['categoria']=='Moto'){
+                        if (carlist[i]['categoria'] == 'Moto') {
                             contMoto++;
-                        } else if (carlist[i]['categoria']=='Carro'){
+                        } else if (carlist[i]['categoria'] == 'Carro') {
                             contCarro++;
                         }
                         break;
                     case 2:
-                        col.innerHTML = carlist[i]['placa_auto']; // Placa do carro
+                        col.innerHTML = carlist[i]['vaga_auto']; // Vaga do carro
                         break;
                     case 3:
-                        col.innerHTML = carlist[i]['modelo_auto']; // Modelo do carro
+                        col.innerHTML = carlist[i]['placa_auto']; // Placa do carro
                         break;
                     case 4:
-                        col.innerHTML = carlist[i]['vaga_auto']; // Vaga do carro
+                        col.innerHTML = carlist[i]['modelo_auto']; // Modelo do carro
                         break;
                     case 5:
                         col.innerHTML = new Date(carlist[i]['entrada_auto']).toString().substring(16, 21);  // Entrada do carro
@@ -131,17 +129,18 @@ function callAjaxFunctions(funcao, infos) {
 function abrirModalPreenchidoSaida(placa) {
     var response = callAjaxFunctions('selectRegistro', placa);
     $("#placa-titulo-saida").html(response[0][1]);
-    $("#entrada-modal").html(new Date(response[0][4]).toString().substring(16, 21));
+    $("#entrada-modal").html(new Date(response[0][5]).toString().substring(16, 21));
     $("#saida-modal").html(new Date().toString().substring(16, 21));
     var dataTemp = new Date();
-    var horasPermanecidas = Math.floor((dataTemp.getTime() - response[0][4]) / 60 / 60 / 1000);
+    var horasPermanecidas = Math.floor((dataTemp.getTime() - response[0][5]) / 60 / 60 / 1000);
     calcularPrecoSaida(horasPermanecidas);
 }
 
 function abrirModalPreenchidoMover(placa) {
     var response = callAjaxFunctions('selectRegistro', placa);
     $("#placa-titulo-mover").html(response[0][1]);
-    $("input[name='vaga_atual']").val(response[0][3]);
+    $("input[name='vaga_atual']").val(response[0][4]);
+    $("#categoria-titulo-mover").html(response[0][2]);
 }
 
 function calcularPrecoSaida(horas) {
@@ -180,28 +179,32 @@ function saidaCarro() {
 
 function moverCarro() {
     var placa = $("#placa-titulo-mover").html();
+    var categoria = $("#categoria-titulo-mover").html();
     var direcionada = $("input[name='vaga_direcionada']").val();
 
     let infos = [
         direcionada,
-        placa
+        placa,
+        categoria
     ];
+
+    console.log(infos);
     var response = callAjaxFunctions('moverRegistro', infos);
     if (response != 0) {
         listarCarrosDashboard();
     } else if (response == 200) {
-        alert("Vaga inválida"); // ERRO PRA MOVER O CARRO
+        alert("Vaga inválida");  // ERRO PRA MOVER O CARRO
     } else {
         alert("Ocorreu um erro inesperado - Contate um admnistrador");
     }
 
-    switch(response){
+    switch (response) {
         case '199':
             alert('Vaga além do limite');
             break;
         case '200':
             alert("Vaga inválida");
-        break;
+            break;
         case '201':
             alert("Vaga já ocupada");
             break;
@@ -219,7 +222,7 @@ function NoResults() {
     const div = document.createElement('div');
     table.append(div);
     const msg = document.createElement('h6');
-    msg.innerHTML = "Sem carros estacionados";
+    msg.innerHTML = "Nenhum automóvel estacionado";
     div.appendChild(msg);
 }
 function camposNulos() {
@@ -232,6 +235,7 @@ function estacionar() {
     var Centrada = $("input[name='c00_entrada']").attr('realdate');
     var Ccat = $("select[name='c00_categoria']").find(":selected").val();
 
+
     let infos = [
         Cplaca,
         Cmodelo,
@@ -240,48 +244,48 @@ function estacionar() {
         Ccat
     ];
 
-    console.log(infos);
-    //$("#Estacionar").modal('hide');
+    $("#Estacionar").modal('hide');
     $("input[name='c00_placa']").val("");
     $("input[name='c00_modelo']").val("");
     $("input[name='c00_vaga']").val("");
-    $("select[name='c00_categoria']").val('--Selecionar--').change();
+    $("select[name='c00_categoria']").val('Selecionar').change();
 
-    //  var i = 0;
-    //  for (a in infos) {
-    //      if (infos[a] == "") {
-    //          camposNulos();
-    //          break;
-    //      } else {
-    //          i++
-    //      }
-    //  }
-    //  if (i == 4) {
-    //      var response = callAjaxFunctions('estacionarRegistro', infos);
-    //      switch (response) {
-    //          case 1:
-    //              $("#Estacionar").modal('hide');
-    //              $("input[name='c00_placa']").val("");
-    //              $("input[name='c00_modelo']").val("");
-    //              $("input[name='c00_vaga']").val("");
-    //              $("select[name='c00_categoria']").val(1);
-    //              listarCarrosDashboard();
-    //              break;
-    //          case '199':
-    //              alert('Seu estacionamento não possui essa quantidade de vagas');
-    //              break;
-    //          case '200':
-    //              alert('Vaga inválida. Insira um valor válido.');
-    //              break;
-    //          case '201':
-    //              alert("Um carro com esta placa está estacionado atualmente");
-    //              break;
-    //          case '202':
-    //              alert('Esta vaga já está ocupada');
-    //              break;
-    //          case '203':
-    //              alert('Não cabem mais carros no seu estacionamento');
-    //              break;
-    //      }
-    //  }
+    var i = 0;
+    for (a in infos) {
+        if (infos[a] == "") {
+            camposNulos();
+            break;
+        } else {
+            i++
+        }
+    }
+    if (i == 5) {
+        var response = callAjaxFunctions('estacionarRegistro', infos);
+
+        switch (response) {
+            case 1:
+                $("#Estacionar").modal('hide');
+                $("input[name='c00_placa']").val("");
+                $("input[name='c00_modelo']").val("");
+                $("input[name='c00_vaga']").val("");
+                $("select[name='c00_categoria']").val(1);
+                listarCarrosDashboard();
+                break;
+            case '199':
+                alert('Seu estacionamento não possui essa quantidade de vagas');
+                break;
+            case '200':
+                alert('Vaga inválida. Insira um valor válido.');
+                break;
+            case '201':
+                alert("Um automóvel com esta placa está estacionado atualmente");
+                break;
+            case '202':
+                alert('Esta vaga já está ocupada');
+                break;
+            case '203':
+                alert('Não cabem mais carros no seu estacionamento');
+                break;
+        }
+    }
 }
