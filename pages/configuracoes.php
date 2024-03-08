@@ -41,7 +41,11 @@
                     <input type="email" class="form-control" id="inputTelefone" disabled value="14 96654-9865">
                 </div>
                 <div class="col-md-3">
-                    <label for="inputTotal" class="form-label">Total de vagas</label>
+                    <label for="inputTotal" class="form-label">Total de vagas para carros</label>
+                    <input type="number" class="form-control" id="inputTotal">
+                </div>
+                <div class="col-md-3">
+                    <label for="inputTotal" class="form-label">Total de vagas para motos</label>
                     <input type="number" class="form-control" id="inputTotal">
                 </div>
                 <div class="col-12">

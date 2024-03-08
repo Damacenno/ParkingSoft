@@ -18,9 +18,9 @@ session_start();
         </div>
         <div class="value">
           <!-- ^^ GAMBIARRA TEMPORARIA HEHEHE  -->
-          <h1 id="total_vagas_carro"><?php echo $_SESSION['user']['total-vagas_carro']; ?></h1>
+          <h1 id="total_vagas_carro"><?php echo $_SESSION['user']['total_vagas_carro']; ?></h1>
           &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
-          <h1 id="total_vagas_moto"><?php echo $_SESSION['user']['total-vagas_moto'];  ?></h1>
+          <h1 id="total_vagas_moto"><?php echo $_SESSION['user']['total_vagas_moto'];  ?></h1>
           <!-- ^^ GAMBIARRA TEMPORARIA HEHEHE  -->
         </div>
       </div>
@@ -46,9 +46,9 @@ session_start();
         <thead>
           <tr>
             <th scope="col">Categoria</th>
+            <th scope="col">Vaga</th>
             <th scope="col">Placa</th>
             <th scope="col">Modelo</th>
-            <th scope="col">Vaga</th>
             <th style=" width: 20%;" scope="col">Entrada</th>
             <th scope="col">Ações</th>
           </tr>
@@ -69,7 +69,7 @@ session_start();
               <div class="field">
                 <label>Categoria</label>
                 <select class="form-select" name='c00_categoria'>
-                  <option selected>--Selecionar--</option>
+                  <option selected value="Selecionar">--Selecionar--</option>
                   <option value="carro">Carro</option>
                   <option value="moto">Moto</option>
                 </select>
@@ -111,8 +111,8 @@ session_start();
             <div id="titulo-saida">
               <h6>Deseja dar saída neste carro?</h6>
             </div>
-            <p>Este carro ficou das <b id="entrada-modal">12:30</b> às <b id="saida-modal">15:45</b></p>
-            <p>Para dar saída, cobre dele <b id="total-modal">R$10,80</b></p>
+            <p>Este carro ficou das <b id="entrada-modal"></b> às <b id="saida-modal"></b></p>
+            <p>Para dar saída, cobre dele <b id="total-modal"></b></p>
             <div id="checkmark"><input type="checkbox" id="box"><label>Pagamento Recebido</label></div>
             <p style="font-size:0.8rem ;">Uma vez marcada a opção acima, não será possível reverter</p>
           </div>
@@ -128,12 +128,12 @@ session_start();
       <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title" id="ModalLabel">Mover o carro de vaga - <span id="placa-titulo-mover"></span></h5>
+            <h5 class="modal-title" id="ModalLabel">Mover <span id='categoria-titulo-mover'></span> de vaga - <span id="placa-titulo-mover"></span></h5>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <div class="modal-body">
             <div id="titulo-saida">
-              <h6>Deseja mover este carro de vaga?</h6>
+              <h6>Deseja mover de vaga?</h6>
             </div>
             <div class="form">
               <div class="field">
