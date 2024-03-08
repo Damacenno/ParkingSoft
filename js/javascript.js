@@ -211,7 +211,7 @@ function moverCarro() {
     if (response != 0) {
         listarCarrosDashboard();
     } else if (response == 200) {
-        alert("Vaga inválida");  // ERRO PRA MOVER O CARRO
+        alert("Vaga inválida");  // ERRO PRA MOVER O CARRO!
     } else {
         alert("Ocorreu um erro inesperado - Contate um admnistrador");
     }
