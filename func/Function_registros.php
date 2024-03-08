@@ -64,7 +64,7 @@ function estacionarRegistro($conn, $infos)
             $stmt->close();
 
             if ($result->num_rows > 0) {
-                return '201'; // a AUTOMOVEL COM A MESMA PLACA ESTA ESTACIONADO ATUALMENTE
+                return '201'; // AUTOMOVEL COM A MESMA PLACA ESTA ESTACIONADO ATUALMENTE
             } else {
                 $sql = "SELECT * FROM registros WHERE `status_pago_auto`= 0 AND `id_estacionamento`= $id AND `vaga_auto`= ? AND `categoria` = ?";
                 $stmt = $conn->prepare($sql);
