@@ -34,7 +34,22 @@ if (isset($_POST["function"])) {
 function estacionarRegistro($conn, $infos)
 {
     $id = $_SESSION['user']['id'];
-    $total = $_SESSION['user']['total-vagas'];
+
+    switch ($infos[4]) { // SWITCH CASE PRA IDENTIFICAR QUAL A CATEGORIA QUE FOI INSERIDA NO FORMULARIO
+        case 'moto': // SE FOR MOTO
+            $total = $_SESSION['user']['total_vagas_moto']; // VARIAVEL TEMPORARIA DE TOTAL - BUSCA NO DB O TOTAL DE VAGA DE MOTO
+            $variavelCategoria = 'Moto'; // VARIAVEL TEMPORARIA DE CATEGORIA 
+            break; // ESSAS VARIAVEIS SAO USADAS NAS QUERYS DE ACORDO COM O SWITCH CASE 
+        case 'carro': // SE FOR CARRO
+            $total = $_SESSION['user']['total_vagas_carro']; // VARIAVEL TEMPORARIA DE TOTAL - BUSCA NO DB O TOTAL DE VAGA DE CARRO
+            $variavelCategoria = 'Carro';// VARIAVEL TEMPORARIA DE CATEGORIA 
+            break;// ESSAS VARIAVEIS SAO USADAS NAS QUERYS DE ACORDO COM O SWITCH CASE 
+    }
+
+    // ELE FAZ DE ACORDO COM A CATEGORIA, POIS VAGAS DE MOTO E DE CARRO TERÃO NUMERAÇÕES DIFERENTES
+    // PORTANTO, É POSSIVEL QUE UM CARRO E UMA MOTO ESTEJAM ESTACIONADOS NA VAGA 1
+    // POIS CADA UM SE REFERE A CATEGORIAS DISTINTAS
+
     if ($infos[2] > $total) {
         return '199';
     } else if ($infos[2] <= 0) {
@@ -51,9 +66,9 @@ function estacionarRegistro($conn, $infos)
             if ($result->num_rows > 0) {
                 return '201'; // O CARRO COM A MESMA PLACA ESTA ESTACIONADO ATUALMENTE
             } else {
-                $sql = "SELECT * FROM registros WHERE `status_pago_auto`= 0 AND `id_estacionamento`= $id AND `vaga_auto`= ?";
+                $sql = "SELECT * FROM registros WHERE `status_pago_auto`= 0 AND `id_estacionamento`= $id AND `vaga_auto`= ? AND `categoria` = ?";
                 $stmt = $conn->prepare($sql);
-                $stmt->bind_param("s", $infos[2]);
+                $stmt->bind_param("ss", $infos[2], $variavelCategoria);
 
                 if ($stmt->execute()) {
                     $result = $stmt->get_result();
@@ -62,9 +77,9 @@ function estacionarRegistro($conn, $infos)
                     if ($result->num_rows > 0) {
                         return '202'; // EXISTE UM CARRO NESTA VAGA
                     } else {
-                        $query = "SELECT COUNT(*) as total FROM registros WHERE `id_estacionamento` = ? AND `status_pago_auto` = 0";
+                        $query = "SELECT COUNT(*) as total FROM registros WHERE `id_estacionamento` = ? AND `status_pago_auto` = 0 AND `categoria`=?";
                         $stmt = $conn->prepare($query);
-                        $stmt->bind_param("s", $id);
+                        $stmt->bind_param("ss", $id, $variavelCategoria);
 
                         if ($stmt->execute()) {
                             $result = $stmt->get_result();
@@ -77,9 +92,9 @@ function estacionarRegistro($conn, $infos)
                             } else {
                                 $stmt->close();
 
-                                $query = "INSERT INTO registros (`placa_auto`, `modelo_auto`, `vaga_auto`, `entrada_auto`, `status_pago_auto`,`id_estacionamento`) VALUES (?, ?, ?, ?, '0',$id)";
+                                $query = "INSERT INTO registros (`categoria`, `placa_auto`, `modelo_auto`, `vaga_auto`, `entrada_auto`, `status_pago_auto`,`id_estacionamento`) VALUES (?,?, ?, ?, ?, '0',$id)";
                                 $stmt = $conn->prepare($query);
-                                $stmt->bind_param("ssii", $infos[0], $infos[1], $infos[2], $infos[3]);
+                                $stmt->bind_param("sssii", $variavelCategoria, $infos[0], $infos[1], $infos[2], $infos[3]);
 
                                 if ($stmt->execute()) {
                                     $stmt->close();
@@ -108,7 +123,7 @@ function estacionarRegistro($conn, $infos)
 function listarRegistros($conn)
 {
     $id = $_SESSION['user']['id'];
-    $sql = "SELECT * FROM registros WHERE `status_pago_auto`= 0 AND `id_estacionamento` = ?";
+    $sql = "SELECT * FROM registros WHERE `status_pago_auto`= 0 AND `id_estacionamento` = ? ORDER BY `vaga_auto`";
 
     $stmt = $conn->prepare($sql);
     $stmt->bind_param("i", $id);
@@ -155,12 +170,13 @@ function selectRegistro($conn, $placa)
                 $output[] = array(
                     null,
                     $row['placa_auto'],
+                    $row['categoria'],
                     $row['modelo_auto'],
                     $row['vaga_auto'],
                     $row['entrada_auto']
                 );
             }
-            return($output);
+            return ($output);
         } else {
             return 0;
         }
@@ -170,6 +186,7 @@ function selectRegistro($conn, $placa)
 function calcularPrecoSaida($conn, $switch)
 {
     $id = $_SESSION['user']['id'];
+    
     if ($switch == "taxaFixa") {
         $sql = "SELECT `preco_fixo` FROM config_estacionamento WHERE `id_estacionamento` = ?";
         $stmt = $conn->prepare($sql);
@@ -266,15 +283,26 @@ function saidaRegistro($conn, $placa)
 function moverRegistro($conn, $infos)
 {
     $id = $_SESSION['user']['id'];
-    $total = $_SESSION['user']['total-vagas'];
+
+    switch ($infos[2]) { // SWITCH CASE PRA IDENTIFICAR QUAL A CATEGORIA QUE FOI INSERIDA NO FORMULARIO
+        case 'Moto': // SE FOR MOTO
+            $total = $_SESSION['user']['total_vagas_moto']; // VARIAVEL TEMPORARIA DE TOTAL - BUSCA NO DB O TOTAL DE VAGA DE MOTO
+            $variavelCategoria = 'Moto'; // VARIAVEL TEMPORARIA DE CATEGORIA 
+            break; // ESSAS VARIAVEIS SAO USADAS NAS QUERYS DE ACORDO COM O SWITCH CASE 
+        case 'Carro': // SE FOR CARRO
+            $total = $_SESSION['user']['total_vagas_carro']; // VARIAVEL TEMPORARIA DE TOTAL - BUSCA NO DB O TOTAL DE VAGA DE CARRO
+            $variavelCategoria = 'Carro';// VARIAVEL TEMPORARIA DE CATEGORIA 
+            break;// ESSAS VARIAVEIS SAO USADAS NAS QUERYS DE ACORDO COM O SWITCH CASE 
+    }
+
     if ($infos[0] > $total) {
         return '199';
     } else if ($infos[0] <= 0) {
         return '200';
     } else {
-        $sql = "SELECT * FROM registros WHERE `id_estacionamento` = ? AND  `vaga_auto` = ? AND `status_pago_auto` = 0";
+        $sql = "SELECT * FROM registros WHERE `id_estacionamento` = ? AND  `vaga_auto` = ? AND `status_pago_auto` = 0 AND `categoria` = ?";
         $stmt = $conn->prepare($sql);
-        $stmt->bind_param("ii", $id, $infos[0]);
+        $stmt->bind_param("iis", $id, $infos[0],$variavelCategoria);
         if ($stmt->execute()) {
             $result = $stmt->get_result();
             $stmt->close();
@@ -282,9 +310,9 @@ function moverRegistro($conn, $infos)
             if ($result->num_rows > 0) {
                 return '201';
             } else {
-                $sql = "UPDATE `registros` SET `vaga_auto`=? WHERE `placa_auto` = ? AND  `id_estacionamento` = ? AND `status_pago_auto`= 0";
+                $sql = "UPDATE `registros` SET `vaga_auto`=? WHERE `placa_auto` = ? AND  `id_estacionamento` = ? AND `status_pago_auto`= 0 AND `categoria` = ?";
                 $stmt = $conn->prepare($sql);
-                $stmt->bind_param("isi", $infos[0], $infos[1], $id);
+                $stmt->bind_param("isis", $infos[0], $infos[1], $id, $variavelCategoria);
                 if ($stmt->execute()) {
                     $stmt->close();
                     $conn->close();
@@ -341,4 +369,3 @@ function listar_registros($conn, $id_estacionamento)
     // Retornar os dados
     return $dados;
 }
-
