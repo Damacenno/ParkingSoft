@@ -308,7 +308,7 @@ function moverRegistro($conn, $infos)
             $stmt->close();
 
             if ($result->num_rows > 0) {
-                return '201';
+                return '202';
             } else {
                 $sql = "UPDATE `registros` SET `vaga_auto`=? WHERE `placa_auto` = ? AND  `id_estacionamento` = ? AND `status_pago_auto`= 0 AND `categoria` = ?";
                 $stmt = $conn->prepare($sql);

@@ -223,7 +223,7 @@ function moverCarro() {
         case '200':
             alert("Vaga inválida");
             break;
-        case '201':
+        case '202':
             alert("Vaga já ocupada");
             break;
         case '0':
