@@ -1,8 +1,11 @@
 <?php
 require("Function_registros.php");
 
-if ($_REQUEST) {
-    $registros = listar_registros($conn, 1);
+$registros = listar_registros($conn, 1);
+
+if ($registros) 
+{
+ 
 
     $registros_vagas = array();
     foreach ($registros as $registro) {
@@ -12,7 +15,7 @@ if ($_REQUEST) {
         // Extrai o valor Y do registro (substitua 'valorY' pelo nome do campo correto)
         $valorY = 1; // Substitua 'valorY' pelo nome do campo correto
 
-        $registro_vaga = array($valorX, $valorY); // Inverte a ordem dos valores
+        $registro_vaga = array(date('d/m/Y H:i', $registro['entrada_auto'] / 1000), $valorY); // Inverte a ordem dos valores
         $registros_vagas[] = $registro_vaga;
     }
 

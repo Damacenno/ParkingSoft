@@ -38,8 +38,11 @@ $registros = listar_registros($conn, 1);
                 echo "<td>" . $registro['placa_auto'] . "</td>";
                 echo "<td>" . $registro['modelo_auto'] . "</td>";
                 echo "<td>" . $registro['vaga_auto'] . "</td>";
-                echo "<td>" . date('H:i', $registro['entrada_auto'] / 1000) . "</td>";
-                echo "<td>" . date('H:i', $registro['saida_auto'] / 1000) . "</td>";
+                echo "<td>" . date('d/m/Y H:i', $registro['entrada_auto'] / 1000) . "</td>";
+                if(!empty($registro['saida_auto']))
+                    echo "<td>" . date('d/m/Y H:i', $registro['saida_auto'] / 1000) . "</td>";
+                else
+                    echo "<td> - </td>";
                 echo "</tr>";
             }
         } ?></tbody>
