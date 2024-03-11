@@ -141,6 +141,7 @@ function abrirModalPreenchidoSaida(placa) { // O PARAMETRO PLACA É PASSADO PELO
     // COLOCA NA SAIDA A HORA EM QUE O BOTÃO DE SAIDA FOI CLICADO NAO SENDO POSSIVEL ALTERAR -- EVITAR FRAUDES
     // MESMA LOGICA DO VALOR DE ENTRADA, PEGA EM TIMESTAMP CONVERTE E DEPOIS FORMATA VISUALMENTE
     $("#saida-modal").html(new Date().toString().substring(16, 21));
+    $("#saida-modal").attr("realdate", new Date().getTime());
     // CRIA UMA VARIAVEL TEMPORARIA PRA CALCULAR O TEMPO QUE FICOU ESTACIONADO
     var dataTemp = new Date();
     // VARIAVEL DE HORAS PERMANECIDAS -- SUBTRAI OS TIMESTAMP DE ENTRADA E SAIDA E CONVERTE OS MILISSEGUNDOS EM HORAS
@@ -165,9 +166,9 @@ function calcularPrecoSaida(horasPermanecidas) {
     if (horasPermanecidas < 1) { // SE FOR MENOS DE UMA HORA USA A TAXA FIXA DO ESTACIONAMENTO
         var response = callAjaxFunctions('calcularPrecoSaida', 'taxaFixa');
         $("#total-modal").html("R$" + response);
-    } else if (horasPermanecidas > 24){ // SE FOR MAIS DE UMA HORA
+    } else if (horasPermanecidas > 24) { // SE FOR MAIS DE UMA HORA
         var checagem = callAjaxFunctions('checaAceitaDiaria'); // VERIFICA SE O ESTACIONAMENTO EM QUESTÃO ACEITA DIARIA
-        if(checagem == 0){ // SE NAO ACEITA DIARIA
+        if (checagem == 0) { // SE NAO ACEITA DIARIA
             var res = callAjaxFunctions('calcularPrecoSaida', 'taxaComum'); // BUSCA A TAXA COMUM - O PRECO POR HORA
             total = res * horasPermanecidas;
             $("#total-modal").html("R$" + total);
@@ -184,7 +185,12 @@ function calcularPrecoSaida(horasPermanecidas) {
 
 function saidaCarro() {
     var placa = $("#placa-titulo-saida").html();
-    var response = callAjaxFunctions('saidaRegistro', placa);
+    var saida = $("#saida-modal").attr('realdate');
+    let infos = [
+        placa,
+        saida
+    ];
+    var response = callAjaxFunctions('saidaRegistro', infos);
     if (response != 0) {
         listarCarrosDashboard();
         $('#box').prop('checked', false);
@@ -206,7 +212,6 @@ function moverCarro() {
         categoria
     ];
 
-    console.log(infos);
     var response = callAjaxFunctions('moverRegistro', infos);
     if (response != 0) {
         listarCarrosDashboard();

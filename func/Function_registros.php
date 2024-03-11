@@ -263,21 +263,22 @@ function checaAceitaDiaria($conn)
     }
 }
 
-function saidaRegistro($conn, $placa)
+function saidaRegistro($conn, $infos)
 {
-    $id = $_SESSION['user']['id'];
-    $sql = "UPDATE `registros` SET `status_pago_auto`='1' WHERE `placa_auto` = ? AND  `id_estacionamento` = ? AND `status_pago_auto`= 0";
-    $stmt = $conn->prepare($sql);
-    $stmt->bind_param("si", $placa, $id);
-    if ($stmt->execute()) {
-        $stmt->close();
-        $conn->close();
-        return 1;
-    } else {
-        $stmt->close();
-        $conn->close();
-        return 0;
-    }
+     $id = $_SESSION['user']['id'];
+     
+     $sql = "UPDATE `registros` SET `status_pago_auto`='1', `saida_auto`=? WHERE `placa_auto` = ? AND  `id_estacionamento` = ? AND `status_pago_auto`= 0";
+     $stmt = $conn->prepare($sql);
+     $stmt->bind_param("isi", $infos[1], $infos[0], $id);
+     if ($stmt->execute()) {
+         $stmt->close();
+         $conn->close();
+         return 1;
+     } else {
+         $stmt->close();
+         $conn->close();
+         return 0;
+     }
 }
 
 function moverRegistro($conn, $infos)
