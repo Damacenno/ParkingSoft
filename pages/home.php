@@ -19,6 +19,7 @@ session_start();
           <div class="value">
             <!-- ^^ GAMBIARRA TEMPORARIA HEHEHE  -->
             <h1 id="total_vagas_carro"><?php echo $_SESSION['user']['total_vagas_carro']; ?></h1>
+            &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
             <h1 id="total_vagas_moto"><?php echo $_SESSION['user']['total_vagas_moto']; ?></h1>
             <!-- ^^ GAMBIARRA TEMPORARIA HEHEHE  -->
           </div>

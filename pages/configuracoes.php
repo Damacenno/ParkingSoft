@@ -32,7 +32,7 @@ $tipos_vaga = isset($_REQUEST['tipos_vaga']) ? $_REQUEST['tipos_vaga'] : 0;
                 <div class="col-md-6">
                     <label for="input_cnpj" class="form-label">Endereço</label>
                     <input type="text" class="form-control" id="input_cnpj"
-                        value="<?php echo $cliente[0]['endereco_estac']; ?>" disabled>
+                        value='<?php echo $cliente[0]['endereco_estac']; ?>' disabled>
                 </div>
                 <div class="col-md-6">
                     <label for="input_endereco" class="form-label">CNPJ</label>
@@ -43,13 +43,13 @@ $tipos_vaga = isset($_REQUEST['tipos_vaga']) ? $_REQUEST['tipos_vaga'] : 0;
                     <label for="inputTotal" class="form-label">Numero de
                         contato</label>
                     <input type="email" class="form-control" id="inputTotal" disabled
-                        value="<?php echo $cliente[0]['numero_contato_estac']; ?>">
+                        value='<?php echo $cliente[0]['numero_contato_estac']; ?>'>
                 </div>
                 <div class="col-md-3">
                     <label for="inputTotal" class="form-label">Email de
                         contato</label>
                     <input type="email" class="form-control" id="inputTotal" disabled
-                        value="<?php echo $cliente[0]['email_estac']; ?>">
+                        value='<?php echo $cliente[0]['email_estac']; ?>'>
                 </div>
                 <hr>
                 <h5>Informações Vagas <span>!</span></h5>
