@@ -213,15 +213,10 @@ function moverCarro() {
     ];
 
     var response = callAjaxFunctions('moverRegistro', infos);
-    if (response != 0) {
-        listarCarrosDashboard();
-    } else if (response == 200) {
-        alert("Vaga inválida");  // ERRO PRA MOVER O CARRO
-    } else {
-        alert("Ocorreu um erro inesperado - Contate um admnistrador");
-    }
-
     switch (response) {
+        case '1':
+            listarCarrosDashboard();
+            break;
         case '199':
             alert('Vaga além do limite');
             break;
@@ -234,7 +229,6 @@ function moverCarro() {
         case '0':
             alert("Erro inesperado - Contate um administrador");
             break;
-
     }
 }
 
@@ -248,9 +242,11 @@ function NoResults() {
     msg.innerHTML = "Nenhum automóvel estacionado";
     div.appendChild(msg);
 }
+
 function camposNulos() {
     alert("Preencha todos os campos igualmente");
 }
+
 function estacionar() {
     var Cplaca = $("input[name='c00_placa']").val();
     var Cmodelo = $("input[name='c00_modelo']").val();
@@ -266,12 +262,6 @@ function estacionar() {
         Centrada,
         Ccat
     ];
-
-    $("#Estacionar").modal('hide');
-    $("input[name='c00_placa']").val("");
-    $("input[name='c00_modelo']").val("");
-    $("input[name='c00_vaga']").val("");
-    $("select[name='c00_categoria']").val('Selecionar').change();
 
     var i = 0;
     for (a in infos) {
@@ -291,7 +281,7 @@ function estacionar() {
                 $("input[name='c00_placa']").val("");
                 $("input[name='c00_modelo']").val("");
                 $("input[name='c00_vaga']").val("");
-                $("select[name='c00_categoria']").val(1);
+                $("select[name='c00_categoria']").val('0').change();
                 listarCarrosDashboard();
                 break;
             case '199':

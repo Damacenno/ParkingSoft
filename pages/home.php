@@ -70,7 +70,7 @@ session_start();
                 <div class="field">
                   <label>Categoria</label>
                   <select class="form-select" name='c00_categoria'>
-                    <option selected value="Selecionar">--Selecionar--</option>
+                    <option selected value="0">Selecionar</option>
                     <option value="carro">Carro</option>
                     <option value="moto">Moto</option>
                   </select>
