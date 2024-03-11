@@ -52,7 +52,7 @@ $tipos_vaga = isset($_REQUEST['tipos_vaga']) ? $_REQUEST['tipos_vaga'] : 0;
                         value='<?php echo $cliente[0]['email_estac']; ?>'>
                 </div>
                 <hr>
-                <h5>Informações Vagas <span>!</span></h5>
+                <h5>Informações Vagas</h5>
                 <div class="col-md-3 tipo_vaga_carro">
                     <label for="inputTotal" class="form-label">Tipos de vagas</label>
                     <select name="tipos_vaga" id="tipos_vaga">
@@ -63,11 +63,15 @@ $tipos_vaga = isset($_REQUEST['tipos_vaga']) ? $_REQUEST['tipos_vaga'] : 0;
                 </div>
                 <div class="col-md-3 tipo_vaga_carro">
                     <label for="inputTotal" class="form-label">Total de vagas para carros</label>
-                    <input type="number" class="form-control" id="inputTotal">
+                    <input type="number" class="form-control" id="inputTotal"
+                    value="<?php echo $cliente[0]['total_vagas_carro_estac']; ?>"
+                    >
                 </div>
                 <div class="col-md-3 tipo_vaga_moto">
                     <label for="inputTotal" class="form-label">Total de vagas para motos</label>
-                    <input type="number" class="form-control" id="inputTotal">
+                    <input type="number" class="form-control" id="inputTotal"
+                    value="<?php echo $cliente[0]['total_vagas_moto_estac']; ?>"
+                    >
                 </div>
 
                 <hr>
