@@ -176,7 +176,7 @@ function selectRegistro($conn, $placa)
                     $row['entrada_auto']
                 );
             }
-            return ($output);
+            return($output);
         } else {
             return 0;
         }
@@ -186,7 +186,7 @@ function selectRegistro($conn, $placa)
 function calcularPrecoSaida($conn, $switch)
 {
     $id = $_SESSION['user']['id'];
-    
+
     if ($switch == "taxaFixa") {
         $sql = "SELECT `preco_fixo` FROM config_estacionamento WHERE `id_estacionamento` = ?";
         $stmt = $conn->prepare($sql);
@@ -302,7 +302,7 @@ function moverRegistro($conn, $infos)
     } else {
         $sql = "SELECT * FROM registros WHERE `id_estacionamento` = ? AND  `vaga_auto` = ? AND `status_pago_auto` = 0 AND `categoria` = ?";
         $stmt = $conn->prepare($sql);
-        $stmt->bind_param("iis", $id, $infos[0],$variavelCategoria);
+        $stmt->bind_param("iis", $id, $infos[0], $variavelCategoria);
         if ($stmt->execute()) {
             $result = $stmt->get_result();
             $stmt->close();
